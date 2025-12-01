@@ -6,7 +6,7 @@ from app.models.patient import PatientInput
 from app.models.api_models import *
 from app.services.acb_engine import ACBEngine
 from app.services.beers_engine import BeersEngine
-from app.services.stopp_engine import STOPPEngine
+from app.services.stopp_start_engine import STOPPStartEngine
 from app.services.tapering_engine import TaperingEngine
 from app.services.frailty_risk_engine import FrailtyRiskEngine
 from app.services.gender_risk_engine import GenderRiskEngine
@@ -47,6 +47,7 @@ print("📁 Loading datasets...")
 acb_data = load_acb_data()
 beers_data = load_beers_data()
 stopp_data = load_stopp_data()
+start_data = load_start_data()
 tapering_data = load_tapering_data()
 cfs_data = load_cfs_map()
 gender_risk_data = load_gender_risk_data()
@@ -62,7 +63,7 @@ print("⚙️  Initializing engines...")
 engines = {
     'acb': ACBEngine(acb_data),
     'beers': BeersEngine(beers_data),
-    'stopp': STOPPEngine(stopp_data),
+    'stopp_start': STOPPStartEngine(stopp_data, start_data),
     'tapering': TaperingEngine(tapering_data, cfs_data),
     'frailty': FrailtyRiskEngine(cfs_data),
     'gender': GenderRiskEngine(gender_risk_data),

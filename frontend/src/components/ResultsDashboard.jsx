@@ -22,7 +22,7 @@ const ResultsDashboard = ({ results, patientData }) => {
 
   if (!results) return null;
 
-  const { medication_analyses, priority_summary, herb_drug_interactions, clinical_recommendations, safety_alerts } = results;
+  const { medication_analyses, priority_summary, herb_drug_interactions, start_recommendations, clinical_recommendations, safety_alerts } = results;
 
   const redMedications = medication_analyses?.filter(m => m.risk_category === 'RED') || [];
   const yellowMedications = medication_analyses?.filter(m => m.risk_category === 'YELLOW') || [];
@@ -162,6 +162,63 @@ const ResultsDashboard = ({ results, patientData }) => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* START Recommendations - Potentially Beneficial Medications */}
+      {start_recommendations && start_recommendations.length > 0 && (
+        <div className="bg-white rounded-lg shadow-lg p-6 border-t-4 border-green-500">
+          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <FaCheckCircle className="mr-2 text-green-600" />
+            START Criteria - Potentially Beneficial Medications ({start_recommendations.length})
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">
+            These medications may be beneficial based on the patient's conditions but are not currently prescribed.
+          </p>
+          <div className="space-y-3">
+            {start_recommendations.map((rec, index) => (
+              <div key={index} className="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg hover:shadow-md transition">
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <span className="text-xs px-2 py-1 rounded-full bg-green-600 text-white font-medium">
+                        {rec.system}
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                        rec.evidence === 'Strong'
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-blue-200 text-blue-800'
+                      }`}>
+                        Evidence: {rec.evidence}
+                      </span>
+                    </div>
+                    <p className="font-semibold text-gray-800 mb-2">
+                      {rec.drug_class}
+                    </p>
+                    <p className="text-sm text-gray-700 mb-2">
+                      <span className="font-medium">Indication:</span> {rec.indication}
+                    </p>
+                    <p className="text-sm text-gray-700 mb-2">
+                      <span className="font-medium">Condition:</span> {rec.condition}
+                    </p>
+                    <p className="text-sm text-gray-600 italic">
+                      {rec.criterion}
+                    </p>
+                    <div className="mt-3 bg-white p-3 rounded border border-green-200">
+                      <p className="text-sm font-medium text-green-900 mb-1">Recommendation:</p>
+                      <p className="text-sm text-green-800">{rec.recommendation}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+            <p className="text-sm text-blue-900">
+              <strong>Clinical Note:</strong> These are evidence-based recommendations. Please review with the patient's
+              clinical context, contraindications, and goals of care before initiating any new therapy.
+            </p>
           </div>
         </div>
       )}

@@ -37,6 +37,17 @@ class MonitoringPlan(BaseModel):
     duration_weeks: int
     alert_criteria: List[str]
 
+class StartRecommendation(BaseModel):
+    """START criteria recommendation for potentially beneficial medication"""
+    criterion_id: str
+    system: str  # "Cardiovascular", "Respiratory", etc.
+    criterion: str  # Full criterion text
+    drug_class: str
+    condition: str
+    indication: str
+    recommendation: str
+    evidence: str  # "Strong" or "Moderate"
+
 class AnalyzePatientResponse(BaseModel):
     """Comprehensive response for patient analysis"""
     patient_summary: Dict[str, Any]
@@ -45,6 +56,7 @@ class AnalyzePatientResponse(BaseModel):
     tapering_schedules: List[TaperingSchedule]
     monitoring_plans: List[MonitoringPlan]
     herb_drug_interactions: List[Dict[str, str]]
+    start_recommendations: List[StartRecommendation]
     clinical_recommendations: List[str]
     safety_alerts: List[str]
 

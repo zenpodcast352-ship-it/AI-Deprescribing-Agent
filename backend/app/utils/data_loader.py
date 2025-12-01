@@ -22,7 +22,12 @@ def load_beers_data():
 
 
 def load_stopp_data():
-    return _read_csv_safe(DATA_DIR / "stopp.csv")
+    """Load STOPP v2 criteria"""
+    return _read_csv_safe(DATA_DIR / "stopp_criteria_v2.csv")
+
+def load_start_data():
+    """Load START v2 criteria"""
+    return _read_csv_safe(DATA_DIR / "start_criteria_v2.csv")
 
 
 def load_tapering_data():

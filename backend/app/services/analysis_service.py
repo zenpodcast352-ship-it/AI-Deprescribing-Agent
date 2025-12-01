@@ -20,7 +20,8 @@ class AnalysisService:
         # Run all modules
         acb_result = self.engines['acb'].calculate_acb_score(patient.medications)
         beers_matches = self.engines['beers'].check_beers_criteria(patient)
-        stopp_flags = self.engines['stopp'].check_stopp_criteria(patient)
+        stopp_flags = self.engines['stopp_start'].check_stopp_criteria(patient)
+        start_recommendations = self.engines['stopp_start'].check_start_criteria(patient)
         taper_plans = self.engines['tapering'].generate_taper_plans(patient)
         gender_flags = self.engines['gender'].check_gender_risks(patient)
         ttb_assessments = self.engines['ttb'].assess_time_to_benefit(patient)
@@ -89,6 +90,22 @@ class AnalysisService:
             for i in all_interactions
         ]
         
+        # Convert START recommendations to response model
+        from app.models.api_models import StartRecommendation
+        start_recs = [
+            StartRecommendation(
+                criterion_id=rec['criterion_id'],
+                system=rec['system'],
+                criterion=rec['criterion'],
+                drug_class=rec['drug_class'],
+                condition=rec['condition'],
+                indication=rec['indication'],
+                recommendation=rec['recommendation'],
+                evidence=rec['evidence']
+            )
+            for rec in start_recommendations
+        ]
+
         return AnalyzePatientResponse(
             patient_summary=patient_summary,
             medication_analyses=medication_analyses,
@@ -96,6 +113,7 @@ class AnalysisService:
             tapering_schedules=tapering_schedules,
             monitoring_plans=monitoring_plans,
             herb_drug_interactions=herb_drug_interactions,
+            start_recommendations=start_recs,
             clinical_recommendations=clinical_recommendations,
             safety_alerts=safety_alerts
         )
